@@ -2,9 +2,8 @@ package ast
 
 import (
 	"bytes"
+	"monkey/token"
 	"strings"
-
-	"github.com/istsh/go-writing-an-interpreter/token"
 )
 
 // The base Node interface
