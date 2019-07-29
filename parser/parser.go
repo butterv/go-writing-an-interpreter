@@ -2,11 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"monkey/ast"
+	"monkey/lexer"
+	"monkey/token"
 	"strconv"
-
-	"github.com/istsh/go-writing-an-interpreter/ast"
-	"github.com/istsh/go-writing-an-interpreter/lexer"
-	"github.com/istsh/go-writing-an-interpreter/token"
 )
 
 const (
