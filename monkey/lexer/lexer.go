@@ -18,20 +18,6 @@ func New(input string) *Lexer {
 	return lexer
 }
 
-func (lexer *Lexer) readChar() {
-	// 次の文字が存在するか
-	if lexer.readPosition >= len(lexer.input) {
-		// 次の文字は存在しない(まだ何も読み込んでいない or ファイルの終わり)
-		lexer.ch = 0
-	} else {
-		// 次の文字をセット
-		lexer.ch = lexer.input[lexer.readPosition]
-	}
-	// 数値を1つ進める
-	lexer.position = lexer.readPosition
-	lexer.readPosition += 1
-}
-
 func (lexer *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -101,10 +87,31 @@ func (lexer *Lexer) NextToken() token.Token {
 	return tok
 }
 
-func newToken(tokenType token.TokenType, ch byte) token.Token {
-	return token.Token{
-		Type:    tokenType,
-		Literal: string(ch),
+func (lexer *Lexer) skipWhitespace() {
+	for lexer.ch == ' ' || lexer.ch == '\t' || lexer.ch == '\n' || lexer.ch == '\r' {
+		lexer.readChar()
+	}
+}
+
+func (lexer *Lexer) readChar() {
+	// 次の文字が存在するか
+	if lexer.readPosition >= len(lexer.input) {
+		// 次の文字は存在しない(まだ何も読み込んでいない or ファイルの終わり)
+		lexer.ch = 0
+	} else {
+		// 次の文字をセット
+		lexer.ch = lexer.input[lexer.readPosition]
+	}
+	// 数値を1つ進める
+	lexer.position = lexer.readPosition
+	lexer.readPosition += 1
+}
+
+func (lexer *Lexer) peekChar() byte {
+	if lexer.readPosition >= len(lexer.input) {
+		return 0
+	} else {
+		return lexer.input[lexer.readPosition]
 	}
 }
 
@@ -116,16 +123,6 @@ func (lexer *Lexer) readIdentifier() string {
 	return lexer.input[position:lexer.position]
 }
 
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
-
-func (lexer *Lexer) skipWhitespace() {
-	for lexer.ch == ' ' || lexer.ch == '\t' || lexer.ch == '\n' || lexer.ch == '\r' {
-		lexer.readChar()
-	}
-}
-
 func (lexer *Lexer) readNumber() string {
 	position := lexer.position
 	for isDigit(lexer.ch) {
@@ -134,14 +131,17 @@ func (lexer *Lexer) readNumber() string {
 	return lexer.input[position:lexer.position]
 }
 
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
-func (lexer *Lexer) peekChar() byte {
-	if lexer.readPosition >= len(lexer.input) {
-		return 0
-	} else {
-		return lexer.input[lexer.readPosition]
+func newToken(tokenType token.TokenType, ch byte) token.Token {
+	return token.Token{
+		Type:    tokenType,
+		Literal: string(ch),
 	}
 }
