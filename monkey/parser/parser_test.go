@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/istsh/go-writing-an-interpreter/monkey/ast"
-
 	"github.com/istsh/go-writing-an-interpreter/monkey/lexer"
 )
 
@@ -233,4 +232,8 @@ func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	}
 
 	return true
+}
+
+func TestParsingInfixExpression(t *testing.T) {
+
 }
