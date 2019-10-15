@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/istsh/go-writing-an-interpreter/monkey/object"
-
 	"github.com/istsh/go-writing-an-interpreter/monkey/evaluator"
 	"github.com/istsh/go-writing-an-interpreter/monkey/lexer"
+	"github.com/istsh/go-writing-an-interpreter/monkey/object"
 	"github.com/istsh/go-writing-an-interpreter/monkey/parser"
 )
 
