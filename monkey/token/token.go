@@ -43,6 +43,7 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+	STRING   = "STRING"
 
 	EQ     = "=="
 	NOT_EQ = "!="
