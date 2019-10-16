@@ -47,6 +47,7 @@ const (
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
 	STRING   = "STRING"
+	MACRO    = "MACRO"
 
 	EQ     = "=="
 	NOT_EQ = "!="
@@ -60,6 +61,7 @@ var keywaords = map[string]TokenType{
 	"if":     IF,
 	"else":   ELSE,
 	"return": RETURN,
+	"macro":  MACRO,
 }
 
 func LookupIdent(ident string) TokenType {
