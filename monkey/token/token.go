@@ -2,18 +2,15 @@ package token
 
 type TokenType string
 
-type Token struct {
-	Type    TokenType
-	Literal string
-}
-
+// 各文字列が何を意味しているのかを対応づける為に、定数を設けている。
 const (
-	ILLEGAL = "ILLEGAL"
-	EOF     = "EOF"
+	ILLEGAL = "ILLEGAL" // 解析に失敗した場合に設定するTokenType
+	EOF     = "EOF"     // コードの終了
 
 	// 識別子 + リテラル
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	INT   = "INT"   // 1343456
+	IDENT  = "IDENT"  // 識別子 e.g. add, foobar, x, y, ...
+	INT    = "INT"    // 数値 e.g. 1343456
+	STRING = "STRING" // 文字列
 
 	// 演算子
 	ASSIGN   = "="
@@ -25,6 +22,9 @@ const (
 
 	LT = "<"
 	GT = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 
 	// デリミタ
 	COMMA     = ","
@@ -46,12 +46,13 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
-	STRING   = "STRING"
 	MACRO    = "MACRO"
-
-	EQ     = "=="
-	NOT_EQ = "!="
 )
+
+type Token struct {
+	Type    TokenType // トークンタイプ
+	Literal string    // 実際の値
+}
 
 var keywaords = map[string]TokenType{
 	"fn":     FUNCTION,

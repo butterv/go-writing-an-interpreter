@@ -20,11 +20,14 @@ func Start(in io.Reader, out io.Writer) {
 
 	for {
 		fmt.Printf(PROMPT)
+
+		// 標準入力待ち
 		scanned := scanner.Scan()
 		if !scanned {
 			return
 		}
 
+		// input
 		line := scanner.Text()
 		l := lexer.New(line)
 		p := parser.New(l)

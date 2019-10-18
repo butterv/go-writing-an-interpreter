@@ -3,10 +3,10 @@ package lexer
 import "github.com/istsh/go-writing-an-interpreter/monkey/token"
 
 type Lexer struct {
-	input        string
-	position     int  // 入力における現在の位置(現在の文字を指し示す)
-	readPosition int  // これから読み込む位置(現在の文字の次)
-	ch           byte // 現在検査中の文字
+	input        string // 入力
+	position     int    // 入力における現在の位置(現在の文字を指し示す)
+	readPosition int    // これから読み込む位置(現在の文字の次)
+	ch           byte   // 現在検査中の文字
 }
 
 func New(input string) *Lexer {
@@ -14,6 +14,7 @@ func New(input string) *Lexer {
 		input: input,
 	}
 
+	// 1文字進める
 	l.readChar()
 	return l
 }
@@ -21,6 +22,7 @@ func New(input string) *Lexer {
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
+	// 空白、タブ、改行を飛ばす
 	l.skipWhitespace()
 
 	switch l.ch {
@@ -92,12 +94,14 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	}
 
+	// 1文字進める
 	l.readChar()
 	return tok
 }
 
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		// 空白、タブ、改行のときに飛ばして1文字進める
 		l.readChar()
 	}
 }
@@ -117,6 +121,7 @@ func (l *Lexer) readChar() {
 }
 
 func (l *Lexer) peekChar() byte {
+	// 次の文字を覗き見る
 	if l.readPosition >= len(l.input) {
 		return 0
 	} else {
@@ -125,30 +130,39 @@ func (l *Lexer) peekChar() byte {
 }
 
 func (l *Lexer) readIdentifier() string {
+	// 識別子を抽出する
 	position := l.position
 	for isLetter(l.ch) {
+		// 文字が途切れるまで読み込む
 		l.readChar()
 	}
+	// positionから、readCharで進んだところまで抽出
 	return l.input[position:l.position]
 }
 
 func (l *Lexer) readNumber() string {
+	// 数値を抽出する
 	position := l.position
 	for isDigit(l.ch) {
+		// 文字が途切れるまで読み込む
 		l.readChar()
 	}
+	// positionから、readCharで進んだところまで抽出
 	return l.input[position:l.position]
 }
 
 func isLetter(ch byte) bool {
+	// 小文字大文字のアルファベットとアンダースコア
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
 func isDigit(ch byte) bool {
+	// 数値
 	return '0' <= ch && ch <= '9'
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
+	// Tokenオブジェクトを初期化する
 	return token.Token{
 		Type:    tokenType,
 		Literal: string(ch),
