@@ -170,9 +170,12 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 }
 
 func (l *Lexer) readString() string {
+	// 次のポジション
 	position := l.position + 1
 	for {
+		// 1文字読み進める
 		l.readChar()
+		// ダブルクォートまたは0(終端)の場合はbreak
 		if l.ch == '"' || l.ch == 0 {
 			break
 		}
