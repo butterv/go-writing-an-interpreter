@@ -51,7 +51,7 @@ const (
 
 type Token struct {
 	Type    TokenType // トークンタイプ
-	Literal string    // 実際の値
+	Literal string    // トークンリテラル、Typeに応じた文字列
 }
 
 var keywaords = map[string]TokenType{
