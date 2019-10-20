@@ -8,8 +8,8 @@ import (
 )
 
 type Node interface {
-	TokenLiteral() string //
-	String() string       //
+	TokenLiteral() string // トークンリテラル、Typeに応じた文字列(テスト用)
+	String() string       // 実際の値
 }
 
 type Statement interface {
@@ -46,8 +46,8 @@ func (p *Program) String() string {
 
 type LetStatement struct {
 	Token token.Token // token.LET トークン
-	Name  *Identifier
-	Value Expression
+	Name  *Identifier // 識別子
+	Value Expression  // 値
 }
 
 func (ls *LetStatement) statementNode()       {}
@@ -55,14 +55,18 @@ func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
 func (ls *LetStatement) String() string {
 	var out bytes.Buffer
 
+	// letの構文は基本的に、"let x = v;"
+	// "let "
 	out.WriteString(ls.TokenLiteral() + " ")
+	// "let x"
 	out.WriteString(ls.Name.String())
+	// "let x = "
 	out.WriteString(" = ")
-
 	if ls.Value != nil {
+		// "let x = v"
 		out.WriteString(ls.Value.String())
 	}
-
+	// "let x = v;"
 	out.WriteString(";")
 
 	return out.String()
@@ -78,12 +82,14 @@ func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
 func (rs *ReturnStatement) String() string {
 	var out bytes.Buffer
 
+	// returnの構文は基本的に、"return v;"
+	// "return "
 	out.WriteString(rs.TokenLiteral() + " ")
-
 	if rs.ReturnValue != nil {
+		// "return v"
 		out.WriteString(rs.ReturnValue.String())
 	}
-
+	// "return v;"
 	out.WriteString(";")
 
 	return out.String()
@@ -159,16 +165,21 @@ func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
 func (pe *PrefixExpression) String() string {
 	var out bytes.Buffer
 
+	// 前置トークン。"-"や"!"。
+	// "("
 	out.WriteString("(")
+	// "(-"
 	out.WriteString(pe.Operator)
+	// "(-v"
 	out.WriteString(pe.Right.String())
+	// "(-v)"
 	out.WriteString(")")
 
 	return out.String()
 }
 
 type InfixExpression struct {
-	Token    token.Token // 演算子トークン、例えば「+」
+	Token    token.Token // 演算子トークン(中置トークン)、例えば「+」
 	Left     Expression
 	Operator string
 	Right    Expression
@@ -179,10 +190,16 @@ func (oe *InfixExpression) TokenLiteral() string { return oe.Token.Literal }
 func (oe *InfixExpression) String() string {
 	var out bytes.Buffer
 
+	// 演算子トークン。"+"や"*"
+	// "("
 	out.WriteString("(")
+	// "(v1"
 	out.WriteString(oe.Left.String())
+	// "(v1 + "
 	out.WriteString(" " + oe.Operator + " ")
+	// "(v1 + v2"
 	out.WriteString(oe.Right.String())
+	// "(v1 + v2)"
 	out.WriteString(")")
 
 	return out.String()
@@ -200,12 +217,15 @@ func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 
+	// "ifトークン"
+	// if
 	out.WriteString("if")
 	out.WriteString(ie.Condition.String())
 	out.WriteString(" ")
 	out.WriteString(ie.Consequence.String())
 
 	if ie.Alternative != nil {
+		// "if else"
 		out.WriteString("else ")
 		out.WriteString(ie.Alternative.String())
 	}
@@ -229,9 +249,13 @@ func (fl *FunctionLiteral) String() string {
 		params = append(params, p.String())
 	}
 
+	// "fn"
 	out.WriteString(fl.TokenLiteral())
+	// "fn("
 	out.WriteString("(")
+	// "fn(x,y,z"
 	out.WriteString(strings.Join(params, ", "))
+	// "fn(x,y,z) "
 	out.WriteString(") ")
 	out.WriteString(fl.Body.String())
 
@@ -254,9 +278,14 @@ func (ce *CallExpression) String() string {
 		args = append(args, a.String())
 	}
 
+	// let add = fn(x,y) {return x + y;}の"add"の部分
+	// "add"
 	out.WriteString(ce.Function.String())
+	// "add("
 	out.WriteString("(")
+	// "add(x,y,z"
 	out.WriteString(strings.Join(args, ", "))
+	// "add(x,y,z)"
 	out.WriteString(")")
 
 	return out.String()
@@ -286,8 +315,12 @@ func (al *ArrayLiteral) String() string {
 		elements = append(elements, el.String())
 	}
 
+	// 配列
+	// "["
 	out.WriteString("[")
+	// "[x,y,z"
 	out.WriteString(strings.Join(elements, ", "))
+	// "[x,y,z]"
 	out.WriteString("]")
 
 	return out.String()
@@ -304,10 +337,15 @@ func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Literal }
 func (ie *IndexExpression) String() string {
 	var out bytes.Buffer
 
+	// "("
 	out.WriteString("(")
+	// "(x"
 	out.WriteString(ie.Left.String())
+	// "(x["
 	out.WriteString("[")
+	// "(x[1"
 	out.WriteString(ie.Index.String())
+	// "(x[1])"
 	out.WriteString("])")
 
 	return out.String()
@@ -328,8 +366,11 @@ func (hl *HashLiteral) String() string {
 		pairs = append(pairs, key.String()+":"+value.String())
 	}
 
+	// "{"
 	out.WriteString("{")
+	// "{a:b,c:d,e:f"
 	out.WriteString(strings.Join(pairs, ", "))
+	// "{a:b,c:d,e:f}"
 	out.WriteString("}")
 
 	return out.String()
